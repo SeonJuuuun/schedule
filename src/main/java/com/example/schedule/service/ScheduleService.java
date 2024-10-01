@@ -3,7 +3,9 @@ package com.example.schedule.service;
 import com.example.schedule.controller.dto.ScheduleReadResponse;
 import com.example.schedule.controller.dto.ScheduleSaveRequest;
 import com.example.schedule.controller.dto.ScheduleSaveResponse;
+import com.example.schedule.controller.dto.ScheduleUpdateRequest;
 import com.example.schedule.domain.Schedule;
+import com.example.schedule.exception.IncorrectPasswordException;
 import com.example.schedule.repository.ScheduleRepository;
 import java.time.LocalDate;
 import java.util.List;
@@ -24,7 +26,8 @@ public class ScheduleService {
         return ScheduleSaveResponse.from(savedSchedule);
     }
 
-    public List<ScheduleReadResponse> findByNameAndUpdatedAtBetween(final LocalDate startDate, final LocalDate endDate, final String name) {
+    public List<ScheduleReadResponse> findByNameAndUpdatedAtBetween(final LocalDate startDate, final LocalDate endDate,
+                                                                    final String name) {
         final List<Schedule> schedules = scheduleRepository.findByNameAndUpdatedAtBetween(startDate, endDate, name);
         return ScheduleReadResponse.from(schedules);
     }
@@ -32,5 +35,13 @@ public class ScheduleService {
     public ScheduleReadResponse findById(final Long scheduleId) {
         final Schedule schedule = scheduleRepository.findById(scheduleId);
         return ScheduleReadResponse.from(schedule);
+    }
+
+    public void updateSchedule(final ScheduleUpdateRequest scheduleUpdateRequest, final Long scheduleId) {
+        final Schedule schedule = scheduleRepository.findById(scheduleId);
+        if (!schedule.getPassword().equals(scheduleUpdateRequest.password())) {
+            throw new IncorrectPasswordException();
+        }
+        scheduleRepository.updateSchedule(scheduleUpdateRequest.task(), scheduleUpdateRequest.name(), scheduleId);
     }
 }

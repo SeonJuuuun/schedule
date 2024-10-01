@@ -70,4 +70,15 @@ public class ScheduleRepository {
                         rs.getDate("updated_at").toLocalDate()
                 ), scheduleId);
     }
+
+    public int updateSchedule(final String task, final String name, final Long id) {
+        final String sql = "UPDATE SCHEDULE SET task = ?, name = ?, updated_at = ? WHERE id = ?";
+
+        return jdbcTemplate.update(sql, ps -> {
+            ps.setString(1, task);
+            ps.setString(2, name);
+            ps.setDate(3, java.sql.Date.valueOf(LocalDate.now()));
+            ps.setLong(4, id);
+        });
+    }
 }
