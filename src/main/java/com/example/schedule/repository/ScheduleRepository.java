@@ -81,4 +81,9 @@ public class ScheduleRepository {
             ps.setLong(4, id);
         });
     }
+
+    public int deleteById(final Long scheduleId) {
+        final String sql = "DELETE FROM SCHEDULE WHERE id = ?";
+        return jdbcTemplate.update(sql, scheduleId);
+    }
 }

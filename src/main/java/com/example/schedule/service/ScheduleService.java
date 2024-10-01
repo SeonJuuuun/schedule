@@ -1,5 +1,6 @@
 package com.example.schedule.service;
 
+import com.example.schedule.controller.dto.ScheduleDeleteRequest;
 import com.example.schedule.controller.dto.ScheduleReadResponse;
 import com.example.schedule.controller.dto.ScheduleSaveRequest;
 import com.example.schedule.controller.dto.ScheduleSaveResponse;
@@ -43,5 +44,13 @@ public class ScheduleService {
             throw new IncorrectPasswordException();
         }
         scheduleRepository.updateSchedule(scheduleUpdateRequest.task(), scheduleUpdateRequest.name(), scheduleId);
+    }
+
+    public void deleteSchedule(final ScheduleDeleteRequest scheduleDeleteRequest, final Long scheduleId) {
+        final Schedule schedule = scheduleRepository.findById(scheduleId);
+        if (!schedule.getPassword().equals(scheduleDeleteRequest.password())) {
+            throw new IncorrectPasswordException();
+        }
+        scheduleRepository.deleteById(scheduleId);
     }
 }

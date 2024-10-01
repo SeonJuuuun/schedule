@@ -1,5 +1,6 @@
 package com.example.schedule.controller;
 
+import com.example.schedule.controller.dto.ScheduleDeleteRequest;
 import com.example.schedule.controller.dto.ScheduleReadResponse;
 import com.example.schedule.controller.dto.ScheduleSaveRequest;
 import com.example.schedule.controller.dto.ScheduleSaveResponse;
@@ -10,6 +11,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -53,5 +55,14 @@ public class ScheduleController {
             @PathVariable(name = "scheduleId") final Long scheduleId) {
         scheduleService.updateSchedule(scheduleUpdateRequest, scheduleId);
         return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/schedule/{scheduleId}")
+    public ResponseEntity<Void> deleteSchedule(
+            @RequestBody final ScheduleDeleteRequest scheduleDeleteRequest,
+            @PathVariable(name = "scheduleId") final Long scheduleId
+    ) {
+        scheduleService.deleteSchedule(scheduleDeleteRequest, scheduleId);
+        return ResponseEntity.noContent().build();
     }
 }
