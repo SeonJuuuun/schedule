@@ -1,0 +1,10 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/schedule?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    username: root
+    password: root
+  sql:
+    init:
+      schema-locations: file:schedule.sql
+      mode: always
