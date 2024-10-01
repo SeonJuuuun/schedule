@@ -47,7 +47,7 @@ public class ScheduleRepository {
                     ps.setDate(2, java.sql.Date.valueOf(endDate));
                     ps.setString(3, name);
                 }, (rs, rowNum) ->
-                        new Schedule(
+                        Schedule.findSchedule(
                                 rs.getLong("id"),
                                 rs.getString("task"),
                                 rs.getString("name"),
@@ -56,5 +56,18 @@ public class ScheduleRepository {
                                 rs.getDate("updated_at").toLocalDate()
                         )
         );
+    }
+
+    public Schedule findById(final Long scheduleId) {
+        final String sql = "SELECT * FROM SCHEDULE WHERE id = ?";
+        return jdbcTemplate.queryForObject(sql, (rs, rowNum) ->
+                Schedule.findSchedule(
+                        rs.getLong("id"),
+                        rs.getString("task"),
+                        rs.getString("name"),
+                        rs.getString("password"),
+                        rs.getDate("created_at").toLocalDate(),
+                        rs.getDate("updated_at").toLocalDate()
+                ), scheduleId);
     }
 }

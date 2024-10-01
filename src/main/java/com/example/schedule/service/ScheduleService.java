@@ -28,4 +28,9 @@ public class ScheduleService {
         final List<Schedule> schedules = scheduleRepository.findByNameAndUpdatedAtBetween(startDate, endDate, name);
         return ScheduleReadResponse.from(schedules);
     }
+
+    public ScheduleReadResponse findById(final Long scheduleId) {
+        final Schedule schedule = scheduleRepository.findById(scheduleId);
+        return ScheduleReadResponse.from(schedule);
+    }
 }

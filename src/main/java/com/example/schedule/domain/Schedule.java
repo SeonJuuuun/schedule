@@ -24,7 +24,7 @@ public class Schedule {
 
     private LocalDate updatedAt;
 
-    public Schedule(final Long id, final String task, final String name, final String password,
+    private Schedule(final Long id, final String task, final String name, final String password,
                     final LocalDate createdAt, final LocalDate updatedAt) {
         this.id = id;
         this.task = task;
@@ -41,5 +41,10 @@ public class Schedule {
     public static Schedule from(final ScheduleSaveRequest scheduleSaveRequest) {
         return new Schedule(null, scheduleSaveRequest.task(), scheduleSaveRequest.name(),
                 scheduleSaveRequest.password(), LocalDate.now(), LocalDate.now());
+    }
+
+    public static Schedule findSchedule(final Long id, final String task, final String name,
+                                                final String password, final LocalDate createdAt, final LocalDate updatedAt) {
+        return new Schedule(id, task, name, password, createdAt, updatedAt);
     }
 }
