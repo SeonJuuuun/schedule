@@ -24,7 +24,7 @@ public class ScheduleService {
         return ScheduleSaveResponse.from(savedSchedule);
     }
 
-    public List<ScheduleReadResponse> findById(final LocalDate startDate, final LocalDate endDate, final String name) {
+    public List<ScheduleReadResponse> findByNameAndUpdatedAtBetween(final LocalDate startDate, final LocalDate endDate, final String name) {
         final List<Schedule> schedules = scheduleRepository.findByNameAndUpdatedAtBetween(startDate, endDate, name);
         return ScheduleReadResponse.from(schedules);
     }
