@@ -24,24 +24,22 @@ public class Schedule {
 
     private LocalDate updatedAt;
 
-    public Schedule(final Long id, final String task, final String name, final String password) {
+    public Schedule(final Long id, final String task, final String name, final String password,
+                    final LocalDate createdAt, final LocalDate updatedAt) {
         this.id = id;
         this.task = task;
         this.name = name;
         this.password = password;
-        this.createdAt = LocalDate.now();
-        this.updatedAt = LocalDate.now();
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
     }
 
-    public Schedule(final String task, final String name, final String password) {
-        this.task = task;
-        this.name = name;
-        this.password = password;
-        this.createdAt = LocalDate.now();
-        this.updatedAt = LocalDate.now();
+    public static Schedule createSchedule(final Long id, final String task, final String name, final String password) {
+        return new Schedule(id, task, name, password, LocalDate.now(), LocalDate.now());
     }
 
     public static Schedule from(final ScheduleSaveRequest scheduleSaveRequest) {
-        return new Schedule(scheduleSaveRequest.task(), scheduleSaveRequest.name(), scheduleSaveRequest.password());
+        return new Schedule(null, scheduleSaveRequest.task(), scheduleSaveRequest.name(),
+                scheduleSaveRequest.password(), LocalDate.now(), LocalDate.now());
     }
 }

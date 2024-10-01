@@ -3,6 +3,8 @@ package com.example.schedule.repository;
 import com.example.schedule.domain.Schedule;
 import java.sql.Date;
 import java.sql.PreparedStatement;
+import java.time.LocalDate;
+import java.util.List;
 import java.util.Objects;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -31,6 +33,28 @@ public class ScheduleRepository {
             return ps;
         }, keyHolder);
         final Long id = Objects.requireNonNull(keyHolder.getKey()).longValue();
-        return new Schedule(id, schedule.getTask(), schedule.getName(), schedule.getPassword());
+        return Schedule.createSchedule(id, schedule.getTask(), schedule.getName(), schedule.getPassword());
+    }
+
+    public List<Schedule> findByNameAndUpdatedAtBetween(
+            final LocalDate startDate,
+            final LocalDate endDate,
+            final String name
+    ) {
+        final String sql = "select * from SCHEDULE WHERE updated_at BETWEEN ? AND ? OR name = ? ORDER BY updated_at DESC";
+        return jdbcTemplate.query(sql, (PreparedStatement ps) -> {
+                    ps.setDate(1, java.sql.Date.valueOf(startDate));
+                    ps.setDate(2, java.sql.Date.valueOf(endDate));
+                    ps.setString(3, name);
+                }, (rs, rowNum) ->
+                        new Schedule(
+                                rs.getLong("id"),
+                                rs.getString("task"),
+                                rs.getString("name"),
+                                rs.getString("password"),
+                                rs.getDate("created_at").toLocalDate(),
+                                rs.getDate("updated_at").toLocalDate()
+                        )
+        );
     }
 }
