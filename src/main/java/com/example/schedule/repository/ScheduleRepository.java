@@ -46,9 +46,9 @@ public class ScheduleRepository {
     ) {
         final String sql =
                 "SELECT s.* FROM SCHEDULE s " +
-                "JOIN WRITER w ON s.writer_id = w.id " +
-                "WHERE s.updated_at BETWEEN ? AND ? OR w.name = ? " +
-                "ORDER BY s.updated_at DESC";
+                        "JOIN WRITER w ON s.writer_id = w.id " +
+                        "WHERE s.updated_at BETWEEN ? AND ? OR w.name = ? " +
+                        "ORDER BY s.updated_at DESC";
 
         return jdbcTemplate.query(sql, ps -> {
                     ps.setDate(1, java.sql.Date.valueOf(startDate));
@@ -59,7 +59,6 @@ public class ScheduleRepository {
                                 rs.getLong("id"),
                                 rs.getString("task"),
                                 writer,
-                                rs.getString("password"),
                                 rs.getDate("created_at").toLocalDate(),
                                 rs.getDate("updated_at").toLocalDate()
                         )
@@ -68,21 +67,15 @@ public class ScheduleRepository {
 
     public Schedule findById(final Long scheduleId) {
         final String sql =
-                "SELECT s.id, s.task, s.password, s.created_at, s.updated_at, w.id AS writer_id, w.name, w.email, w.created_at AS writer_created_at, w.updated_at AS writer_updated_at "
-                        +
-                        "FROM SCHEDULE s JOIN WRITER w ON s.writer_id = w.id WHERE s.id = ?";
+                "SELECT s.*, w.name FROM SCHEDULE s " +
+                        "JOIN WRITER w ON s.writer_id = w.id " +
+                        "WHERE s.id = ?";
+
         return jdbcTemplate.queryForObject(sql, (rs, rowNum) ->
                 Schedule.of(
                         rs.getLong("id"),
                         rs.getString("task"),
-                        Writer.of(
-                                rs.getLong("writer_id"),
-                                rs.getString("name"),
-                                rs.getString("email"),
-                                rs.getDate("writer_created_at").toLocalDate(),
-                                rs.getDate("writer_updated_at").toLocalDate()
-                        ),
-                        rs.getString("password"),
+                        Writer.from(rs.getString("w.name")),
                         rs.getDate("created_at").toLocalDate(),
                         rs.getDate("updated_at").toLocalDate()
                 ), scheduleId);

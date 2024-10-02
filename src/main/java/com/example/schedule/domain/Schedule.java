@@ -44,8 +44,8 @@ public class Schedule {
                 scheduleSaveRequest.password(), LocalDate.now(), LocalDate.now());
     }
 
-    public static Schedule of(final Long id, final String task, final Writer writer,
-                              final String password, final LocalDate createdAt, final LocalDate updatedAt) {
-        return new Schedule(id, task, writer, password, createdAt, updatedAt);
+    public static Schedule of(final Long id, final String task, final Writer writer, final LocalDate createdAt,
+                              final LocalDate updatedAt) {
+        return new Schedule(id, task, writer, null, createdAt, updatedAt);
     }
 }
