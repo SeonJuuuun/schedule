@@ -44,7 +44,12 @@ public class ScheduleRepository {
             final LocalDate endDate,
             final Writer writer
     ) {
-        final String sql = "SELECT * FROM SCHEDULE WHERE updated_at BETWEEN ? AND ? AND writer_id = ? ORDER BY updated_at DESC";
+        final String sql =
+                "SELECT s.* FROM SCHEDULE s " +
+                "JOIN WRITER w ON s.writer_id = w.id " +
+                "WHERE s.updated_at BETWEEN ? AND ? OR w.name = ? " +
+                "ORDER BY s.updated_at DESC";
+
         return jdbcTemplate.query(sql, ps -> {
                     ps.setDate(1, java.sql.Date.valueOf(startDate));
                     ps.setDate(2, java.sql.Date.valueOf(endDate));
@@ -62,8 +67,10 @@ public class ScheduleRepository {
     }
 
     public Schedule findById(final Long scheduleId) {
-        final String sql = "SELECT s.id, s.task, s.password, s.created_at, s.updated_at, w.id AS writer_id, w.name, w.email, w.created_at AS writer_created_at, w.updated_at AS writer_updated_at " +
-                "FROM SCHEDULE s JOIN WRITER w ON s.writer_id = w.id WHERE s.id = ?";
+        final String sql =
+                "SELECT s.id, s.task, s.password, s.created_at, s.updated_at, w.id AS writer_id, w.name, w.email, w.created_at AS writer_created_at, w.updated_at AS writer_updated_at "
+                        +
+                        "FROM SCHEDULE s JOIN WRITER w ON s.writer_id = w.id WHERE s.id = ?";
         return jdbcTemplate.queryForObject(sql, (rs, rowNum) ->
                 Schedule.of(
                         rs.getLong("id"),
