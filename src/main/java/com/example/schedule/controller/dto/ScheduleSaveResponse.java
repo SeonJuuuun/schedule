@@ -10,7 +10,7 @@ public record ScheduleSaveResponse(
         LocalDate updatedAt
 ) {
     public static ScheduleSaveResponse from(final Schedule schedule) {
-        return new ScheduleSaveResponse(schedule.getTask(), schedule.getName(),
+        return new ScheduleSaveResponse(schedule.getTask(), schedule.getWriter().getName(),
                 schedule.getCreatedAt(), schedule.getUpdatedAt());
     }
 }

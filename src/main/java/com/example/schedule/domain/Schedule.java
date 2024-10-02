@@ -16,7 +16,7 @@ public class Schedule {
 
     private String task;
 
-    private String name;
+    private Writer writer;
 
     private String password;
 
@@ -24,27 +24,28 @@ public class Schedule {
 
     private LocalDate updatedAt;
 
-    private Schedule(final Long id, final String task, final String name, final String password,
+    private Schedule(final Long id, final String task, final Writer writer, final String password,
                      final LocalDate createdAt, final LocalDate updatedAt) {
         this.id = id;
         this.task = task;
-        this.name = name;
+        this.writer = writer;
         this.password = password;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
 
-    public static Schedule createSchedule(final Long id, final String task, final String name, final String password) {
-        return new Schedule(id, task, name, password, LocalDate.now(), LocalDate.now());
+    public static Schedule createSchedule(final Long id, final String task, final Writer writer,
+                                          final String password) {
+        return new Schedule(id, task, writer, password, LocalDate.now(), LocalDate.now());
     }
 
-    public static Schedule from(final ScheduleSaveRequest scheduleSaveRequest) {
-        return new Schedule(null, scheduleSaveRequest.task(), scheduleSaveRequest.name(),
+    public static Schedule of(final ScheduleSaveRequest scheduleSaveRequest, final Writer writer) {
+        return new Schedule(null, scheduleSaveRequest.task(), writer,
                 scheduleSaveRequest.password(), LocalDate.now(), LocalDate.now());
     }
 
-    public static Schedule findSchedule(final Long id, final String task, final String name,
-                                        final String password, final LocalDate createdAt, final LocalDate updatedAt) {
-        return new Schedule(id, task, name, password, createdAt, updatedAt);
+    public static Schedule of(final Long id, final String task, final Writer writer,
+                              final String password, final LocalDate createdAt, final LocalDate updatedAt) {
+        return new Schedule(id, task, writer, password, createdAt, updatedAt);
     }
 }
