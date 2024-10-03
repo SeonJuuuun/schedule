@@ -24,4 +24,16 @@ public class WriterRepository {
                         rs.getDate("updated_at").toLocalDate()
                 ), name);
     }
+//
+//    public Writer findById(final Long id) {
+//        final String sql = "SELECT * FROM WRITER WHERE id = ?";
+//        return jdbcTemplate.queryForObject(sql, (rs, rowNum) ->
+//                Writer.of(
+//                        rs.getLong("id"),
+//                        rs.getString("name"),
+//                        rs.getString("email"),
+//                        rs.getDate("created_at").toLocalDate(),
+//                        rs.getDate("updated_at").toLocalDate()
+//                ), id);
+//    }
 }

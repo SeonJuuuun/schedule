@@ -59,6 +59,7 @@ public class ScheduleRepository {
                                 rs.getLong("id"),
                                 rs.getString("task"),
                                 writer,
+                                rs.getString("password"),
                                 rs.getDate("created_at").toLocalDate(),
                                 rs.getDate("updated_at").toLocalDate()
                         )
@@ -76,19 +77,22 @@ public class ScheduleRepository {
                         rs.getLong("id"),
                         rs.getString("task"),
                         Writer.from(rs.getString("w.name")),
+                        rs.getString("password"),
                         rs.getDate("created_at").toLocalDate(),
                         rs.getDate("updated_at").toLocalDate()
                 ), scheduleId);
     }
 
-    public int updateSchedule(final String task, final String name, final Long id) {
-        final String sql = "UPDATE SCHEDULE SET task = ?, name = ?, updated_at = ? WHERE id = ?";
-
-        return jdbcTemplate.update(sql, ps -> {
+    public int updateSchedule(final String task, final String name, final Long scheduleId) {
+        final String updateScheduleSql =
+                "UPDATE SCHEDULE s, WRITER w "
+                + "SET s.task = ?, s.updated_at = ?, w.name =?  "
+                + "WHERE s.writer_id = w.id AND s.id = ?";
+        return jdbcTemplate.update(updateScheduleSql, ps -> {
             ps.setString(1, task);
-            ps.setString(2, name);
-            ps.setDate(3, java.sql.Date.valueOf(LocalDate.now()));
-            ps.setLong(4, id);
+            ps.setDate(2, java.sql.Date.valueOf(LocalDate.now()));
+            ps.setString(3, name);
+            ps.setLong(4, scheduleId);
         });
     }
 

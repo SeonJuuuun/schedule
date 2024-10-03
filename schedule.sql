@@ -16,7 +16,7 @@ CREATE TABLE SCHEDULE
     task       VARCHAR(20) NOT NULL,
     password   VARCHAR(20) NOT NULL,
     writer_id  BIGINT,
-    created_at timestamp,
-    updated_at timestamp,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (writer_id) REFERENCES WRITER(id)
 );
