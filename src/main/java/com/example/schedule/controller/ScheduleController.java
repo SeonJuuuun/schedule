@@ -9,6 +9,8 @@ import com.example.schedule.service.ScheduleService;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -36,11 +38,13 @@ public class ScheduleController {
     public ResponseEntity<List<ScheduleReadResponse>> readSchedules(
             @RequestParam(value = "startDate", required = false) final LocalDate startDate,
             @RequestParam(value = "endDate", required = false) final LocalDate endDate,
-            @RequestParam(value = "name", required = false) final String name
+            @RequestParam(value = "name", required = false) final String name,
+            @RequestParam(defaultValue = "0", value = "page") int page,
+            @RequestParam(defaultValue = "10", value = "size") int size
     ) {
-        final List<ScheduleReadResponse> responses = scheduleService.findByNameAndUpdatedAtBetween(startDate, endDate,
-                name);
-        return ResponseEntity.ok(responses);
+        final Page<ScheduleReadResponse> responses = scheduleService.findByNameAndUpdatedAtBetween(startDate, endDate,
+                name, PageRequest.of(page, size));
+        return ResponseEntity.ok(responses.getContent());
     }
 
     @GetMapping("/read/{scheduleId}")

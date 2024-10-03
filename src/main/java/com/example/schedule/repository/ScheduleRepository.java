@@ -7,6 +7,7 @@ import java.sql.PreparedStatement;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
+import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -42,18 +43,23 @@ public class ScheduleRepository {
     public List<Schedule> findByNameAndUpdatedAtBetween(
             final LocalDate startDate,
             final LocalDate endDate,
-            final Writer writer
+            final Writer writer,
+            final Pageable pageable
     ) {
         final String sql =
                 "SELECT s.* FROM SCHEDULE s " +
                         "JOIN WRITER w ON s.writer_id = w.id " +
-                        "WHERE s.updated_at BETWEEN ? AND ? OR w.name = ? " +
-                        "ORDER BY s.updated_at DESC";
+                        "WHERE (s.updated_at BETWEEN ? AND ?) " +
+                        "AND w.id = ? " +
+                        "ORDER BY s.updated_at DESC " +
+                        "LIMIT ? OFFSET ?";
 
         return jdbcTemplate.query(sql, ps -> {
                     ps.setDate(1, java.sql.Date.valueOf(startDate));
                     ps.setDate(2, java.sql.Date.valueOf(endDate));
                     ps.setLong(3, writer.getId());
+                    ps.setInt(4, pageable.getPageSize());
+                    ps.setLong(5, pageable.getOffset());
                 }, (rs, rowNum) ->
                         Schedule.of(
                                 rs.getLong("id"),
@@ -86,8 +92,8 @@ public class ScheduleRepository {
     public int updateSchedule(final String task, final String name, final Long scheduleId) {
         final String updateScheduleSql =
                 "UPDATE SCHEDULE s, WRITER w "
-                + "SET s.task = ?, s.updated_at = ?, w.name =?  "
-                + "WHERE s.writer_id = w.id AND s.id = ?";
+                        + "SET s.task = ?, s.updated_at = ?, w.name =?  "
+                        + "WHERE s.writer_id = w.id AND s.id = ?";
         return jdbcTemplate.update(updateScheduleSql, ps -> {
             ps.setString(1, task);
             ps.setDate(2, java.sql.Date.valueOf(LocalDate.now()));
