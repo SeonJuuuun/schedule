@@ -1,5 +1,8 @@
 package com.example.schedule.service;
 
+import static com.example.schedule.exception.ErrorCodes.INCORRECT_PASSWORD;
+import static org.springframework.http.HttpStatus.UNAUTHORIZED;
+
 import com.example.schedule.controller.dto.ScheduleDeleteRequest;
 import com.example.schedule.controller.dto.ScheduleReadResponse;
 import com.example.schedule.controller.dto.ScheduleSaveRequest;
@@ -7,7 +10,6 @@ import com.example.schedule.controller.dto.ScheduleSaveResponse;
 import com.example.schedule.controller.dto.ScheduleUpdateRequest;
 import com.example.schedule.domain.Schedule;
 import com.example.schedule.domain.Writer;
-import com.example.schedule.exception.ErrorCodes;
 import com.example.schedule.exception.ScheduleApplicationException;
 import com.example.schedule.repository.ScheduleRepository;
 import com.example.schedule.repository.WriterRepository;
@@ -17,7 +19,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -57,7 +58,7 @@ public class ScheduleService {
     public void updateSchedule(final ScheduleUpdateRequest scheduleUpdateRequest, final Long scheduleId) {
         final Schedule schedule = scheduleRepository.findById(scheduleId);
         if (!schedule.getPassword().equals(scheduleUpdateRequest.password())) {
-            throw new ScheduleApplicationException(ErrorCodes.INCORRECT_PASSWORD, HttpStatus.UNAUTHORIZED);
+            throw new ScheduleApplicationException(INCORRECT_PASSWORD, UNAUTHORIZED);
         }
         scheduleRepository.updateSchedule(scheduleUpdateRequest.task(), scheduleUpdateRequest.name(), scheduleId);
     }
@@ -65,7 +66,7 @@ public class ScheduleService {
     public void deleteSchedule(final ScheduleDeleteRequest scheduleDeleteRequest, final Long scheduleId) {
         final Schedule schedule = scheduleRepository.findById(scheduleId);
         if (!schedule.getPassword().equals(scheduleDeleteRequest.password())) {
-            throw new ScheduleApplicationException(ErrorCodes.INCORRECT_PASSWORD, HttpStatus.UNAUTHORIZED);
+            throw new ScheduleApplicationException(INCORRECT_PASSWORD, UNAUTHORIZED);
         }
         scheduleRepository.deleteById(scheduleId);
     }

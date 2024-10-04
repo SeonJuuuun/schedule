@@ -35,7 +35,7 @@ public class Writer {
         return new Writer(id, name, email, createdAt, updatedAt);
     }
 
-    public static Writer from(final String name, final String email, final LocalDate createdAt,
+    public static Writer of(final String name, final String email, final LocalDate createdAt,
                               final LocalDate updatedAt) {
         return new Writer(null, name, email, createdAt, updatedAt);
     }

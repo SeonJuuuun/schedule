@@ -7,7 +7,6 @@ public class ScheduleApplicationException extends RuntimeException {
     private final ErrorCodes errorCodes;
     private final HttpStatus status;
 
-
     public ScheduleApplicationException(ErrorCodes errorCodes, HttpStatus status) {
         this.errorCodes = errorCodes;
         this.status = status;

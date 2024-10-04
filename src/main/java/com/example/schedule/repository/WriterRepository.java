@@ -14,7 +14,7 @@ public class WriterRepository {
 
     private final JdbcTemplate jdbcTemplate;
 
-    public WriterRepository(JdbcTemplate jdbcTemplate) {
+    public WriterRepository(final JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 

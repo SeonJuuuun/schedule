@@ -2,7 +2,6 @@ package com.example.schedule.repository;
 
 import com.example.schedule.domain.Schedule;
 import com.example.schedule.domain.Writer;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.time.LocalDate;
 import java.util.List;
@@ -18,7 +17,7 @@ public class ScheduleRepository {
 
     private final JdbcTemplate jdbcTemplate;
 
-    public ScheduleRepository(JdbcTemplate jdbcTemplate) {
+    public ScheduleRepository(final JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
@@ -82,7 +81,7 @@ public class ScheduleRepository {
                 Schedule.of(
                         rs.getLong("id"),
                         rs.getString("task"),
-                        Writer.from(
+                        Writer.of(
                                 rs.getString("w.name"),
                                 rs.getString("w.email"),
                                 rs.getDate("w.created_at").toLocalDate(),
