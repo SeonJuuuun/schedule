@@ -2,11 +2,15 @@ package com.example.schedule.repository;
 
 import com.example.schedule.domain.Schedule;
 import com.example.schedule.domain.Writer;
+import com.example.schedule.exception.ErrorCodes;
+import com.example.schedule.exception.ScheduleApplicationException;
 import java.sql.PreparedStatement;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -76,21 +80,27 @@ public class ScheduleRepository {
                 "SELECT s.*, w.* FROM SCHEDULE s " +
                         "JOIN WRITER w ON s.writer_id = w.id " +
                         "WHERE s.id = ?";
-
-        return jdbcTemplate.queryForObject(sql, (rs, rowNum) ->
-                Schedule.of(
-                        rs.getLong("id"),
-                        rs.getString("task"),
-                        Writer.of(
-                                rs.getString("w.name"),
-                                rs.getString("w.email"),
-                                rs.getDate("w.created_at").toLocalDate(),
-                                rs.getDate("w.updated_at").toLocalDate()
-                        ),
-                        rs.getString("password"),
-                        rs.getDate("created_at").toLocalDate(),
-                        rs.getDate("updated_at").toLocalDate()
-                ), scheduleId);
+        try {
+            // JdbcTemplate의 queryForObject 메서드는 결과가 없을 경우 null이 아닌 EmptyResultDataAccessException을 발생시키므로
+            // try-catch로 해결한다.
+            return jdbcTemplate.queryForObject(sql, (rs, rowNum) ->
+                    Schedule.of(
+                            rs.getLong("id"),
+                            rs.getString("task"),
+                            Writer.of(
+                                    rs.getString("w.name"),
+                                    rs.getString("w.email"),
+                                    rs.getDate("w.created_at").toLocalDate(),
+                                    rs.getDate("w.updated_at").toLocalDate()
+                            ),
+                            rs.getString("password"),
+                            rs.getDate("created_at").toLocalDate(),
+                            rs.getDate("updated_at").toLocalDate()
+                    ), scheduleId);
+        } catch (EmptyResultDataAccessException e) {
+            throw new ScheduleApplicationException(ErrorCodes.SCHEDULE_NOT_FOUND,
+                    HttpStatus.NOT_FOUND);
+        }
     }
 
     public int updateSchedule(final String task, final String name, final Long scheduleId) {
