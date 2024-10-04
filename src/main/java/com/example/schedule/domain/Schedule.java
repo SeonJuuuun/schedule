@@ -24,6 +24,7 @@ public class Schedule {
 
     private LocalDate updatedAt;
 
+    // 정적 팩토리 메서드 사용 => 생성자 Private
     private Schedule(final Long id, final String task, final Writer writer, final String password,
                      final LocalDate createdAt, final LocalDate updatedAt) {
         this.id = id;
@@ -34,6 +35,7 @@ public class Schedule {
         this.updatedAt = updatedAt;
     }
 
+    // 일정 생성
     public static Schedule createSchedule(final Long id, final String task, final Writer writer,
                                           final String password) {
         return new Schedule(id, task, writer, password, LocalDate.now(), LocalDate.now());

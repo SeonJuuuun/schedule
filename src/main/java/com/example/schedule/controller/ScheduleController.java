@@ -36,9 +36,9 @@ public class ScheduleController {
 
     @GetMapping("/read/schedules")
     public ResponseEntity<List<ScheduleReadResponse>> readSchedules(
-            @RequestParam(value = "startDate", required = false) final LocalDate startDate,
-            @RequestParam(value = "endDate", required = false) final LocalDate endDate,
-            @RequestParam(value = "name", required = false) final String name,
+            @RequestParam(value = "startDate", required = false) final LocalDate startDate, // 수정일 검색 시작 날짜
+            @RequestParam(value = "endDate", required = false) final LocalDate endDate, // 수정일 검색 끝 날짜
+            @RequestParam(value = "name", required = false) final String name, // 작성자 명 검색 키워드
             @RequestParam(defaultValue = "0", value = "page") int page,
             @RequestParam(defaultValue = "10", value = "size") int size
     ) {

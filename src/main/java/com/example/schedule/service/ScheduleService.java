@@ -31,8 +31,8 @@ public class ScheduleService {
     private final WriterRepository writerRepository;
 
     public ScheduleSaveResponse save(final ScheduleSaveRequest scheduleSaveRequest) {
-        final Writer writer = writerRepository.findByName(scheduleSaveRequest.name());
-        final Schedule schedule = Schedule.of(scheduleSaveRequest, writer);
+        final Writer writer = writerRepository.findByName(scheduleSaveRequest.name()); // 요청에 있는 이름을 기준으로 작성자명 검색
+        final Schedule schedule = Schedule.of(scheduleSaveRequest, writer); // Schedule 객체로 변환
         final Schedule savedSchedule = scheduleRepository.save(schedule);
         return ScheduleSaveResponse.from(savedSchedule);
     }
@@ -45,9 +45,9 @@ public class ScheduleService {
     ) {
         final Writer writer = writerRepository.findByName(name);
         final List<Schedule> schedules = scheduleRepository.findByNameAndUpdatedAtBetween(startDate, endDate, writer,
-                pageable);
+                pageable); // 작성자명과 수정일을 기준으로 검색
 
-        return new PageImpl<>(ScheduleReadResponse.from(schedules));
+        return new PageImpl<>(ScheduleReadResponse.from(schedules)); //page 객체로 변환
     }
 
     public ScheduleReadResponse findById(final Long scheduleId) {
@@ -57,6 +57,7 @@ public class ScheduleService {
 
     public void updateSchedule(final ScheduleUpdateRequest scheduleUpdateRequest, final Long scheduleId) {
         final Schedule schedule = scheduleRepository.findById(scheduleId);
+        // 패스워드가 올바른지 확인하는 로직
         if (!schedule.getPassword().equals(scheduleUpdateRequest.password())) {
             throw new ScheduleApplicationException(INCORRECT_PASSWORD, UNAUTHORIZED);
         }
