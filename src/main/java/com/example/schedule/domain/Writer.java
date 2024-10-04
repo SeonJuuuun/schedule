@@ -35,7 +35,12 @@ public class Writer {
         return new Writer(id, name, email, createdAt, updatedAt);
     }
 
-    public static Writer from(final String name) {
-        return new Writer(null, name, null, null, null);
+    public static Writer from(final String name, final String email, final LocalDate createdAt,
+                              final LocalDate updatedAt) {
+        return new Writer(null, name, email, createdAt, updatedAt);
+    }
+
+    public static Writer createWriter(final Long id, final String name, final String email) {
+        return new Writer(id, name, email, LocalDate.now(), LocalDate.now());
     }
 }

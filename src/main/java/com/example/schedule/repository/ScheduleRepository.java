@@ -31,8 +31,8 @@ public class ScheduleRepository {
             ps.setString(1, schedule.getTask());
             ps.setLong(2, schedule.getWriter().getId());
             ps.setString(3, schedule.getPassword());
-            ps.setDate(4, Date.valueOf(schedule.getCreatedAt()));
-            ps.setDate(5, Date.valueOf(schedule.getUpdatedAt()));
+            ps.setDate(4, java.sql.Date.valueOf(LocalDate.now()));
+            ps.setDate(5, java.sql.Date.valueOf(LocalDate.now()));
             return ps;
         }, keyHolder);
 
@@ -74,7 +74,7 @@ public class ScheduleRepository {
 
     public Schedule findById(final Long scheduleId) {
         final String sql =
-                "SELECT s.*, w.name FROM SCHEDULE s " +
+                "SELECT s.*, w.* FROM SCHEDULE s " +
                         "JOIN WRITER w ON s.writer_id = w.id " +
                         "WHERE s.id = ?";
 
@@ -82,7 +82,12 @@ public class ScheduleRepository {
                 Schedule.of(
                         rs.getLong("id"),
                         rs.getString("task"),
-                        Writer.from(rs.getString("w.name")),
+                        Writer.from(
+                                rs.getString("w.name"),
+                                rs.getString("w.email"),
+                                rs.getDate("w.created_at").toLocalDate(),
+                                rs.getDate("w.updated_at").toLocalDate()
+                        ),
                         rs.getString("password"),
                         rs.getDate("created_at").toLocalDate(),
                         rs.getDate("updated_at").toLocalDate()
